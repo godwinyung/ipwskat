@@ -2,7 +2,8 @@ args <- (commandArgs(TRUE))
 eval(parse(text=args[[1]])) #taskID1
 eval(parse(text=args[[2]])) #taskID2
 eval(parse(text=args[[3]])) #njobs = total number of jobs to be submitted to the cluster
-source("myfunctions.r")
+source("ipwskat.r")
+source("sim-cts.R")
 
 #####
 ### PACKAGES
