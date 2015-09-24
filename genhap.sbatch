@@ -1,13 +1,9 @@
-#!/bin/sh
+#!/bin/bash
 
-#SBATCH -J bin
 #SBATCH -n 1
-#SBATCH -t 2-00:00
-#SBATCH -p general
-#SBATCH -o genhap.out
-#SBATCH -e genhap.err
-#SBATCH --mail-type=ALL
-#SBATCH --mail-user=godwin.y.yung@gmail.com
-#SBATCH --mem=600
+#SBATCH -N 1
+#SBATCH -t 0-00:01
+#SBATCH -p serial_requeue
+#SBATCH --mem=200
 
-python genhap.py
+python ../code/genhap.py out.hap-1 regions.txt haplotypes $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_ID
