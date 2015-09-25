@@ -20,10 +20,10 @@ _Description_: Given a set of parameters, SNP information, haplotypes, and outpu
 
 Note, results are saved intermittently so that jobs can be stopped and restarted at any time.
 
-**sim-cts.sbatch**
-_Usage_: sbatch --array=1-1000 sim-cts.sbatch
+**sim-cts.sbatch**  
+_Usage_: sbatch --array=1-1000 sim-cts.sbatch  
 _Description_: Generates simulations for 10,000 regions, 10 at a time.
 
-**sim-setting.R**
-_Usage_: R CMD BATCH --quiet --no-restore --no-save "--args taskID=$i interval=10" sim-setting.r output/Rout/sim${i}.Rout
+**sim-setting.R**  
+_Usage_: R CMD BATCH --quiet --no-restore --no-save "--args taskID=$i interval=10" sim-setting.r output/Rout/sim${i}.Rout  
 _Description_: Generates simulations for regions 10*(i-1)+1, ..., 10*(i-1)+10.
