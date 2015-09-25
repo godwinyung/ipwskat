@@ -2,7 +2,7 @@
 
 #SBATCH -n 1
 #SBATCH -N 1
-#SBATCH -t 0-00:01
+#SBATCH -t 0-00:10
 #SBATCH -p serial_requeue
 #SBATCH --mem=200
 
