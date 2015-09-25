@@ -1,7 +1,9 @@
-sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", MAF.threshold = 0.03, prop.Y = 0.05, prop.pos.Y = 0.50, prop.D=0.05, prop.pos.D = 0.50, n1=1000, n.resampling=1000, r.corr=seq(0,1,0.1), R.min=1, R.max=100, S=10, track=F, sr.mode=F, filename=NA) {
+sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", MAF.threshold = 0.03, prop.Y = 0.05, prop.pos.Y = 0.50, prop.D=0.05, prop.pos.D = 0.50, n1=1000, n.resampling=1000, r.corr=seq(0,1,0.1), R.min=1, R.max=100, S=10, track=F, sr.mode=F, file.regions=NA, file.pos=NA, folder.hap=NA, file.out=NA) {
+     
+     regions   <- read.table(file.regions)
+     SNPInfo   <- read.table(file.pos,header=T)
      
      # define link function
-     
      if (link == "logit") {
           gD        <- logit
           gD.inv    <- expit
@@ -19,8 +21,8 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
      N <- calc.N(kappa,1e-4,n1) 
      
      # initialize matrix of results
-     if (sr.mode & file.exists(filename)) {
-          results   <- local(get(load(filename)))
+     if (sr.mode & file.exists(file.out)) {
+          results   <- local(get(load(file.out)))
           ssim      <- which(rowSums(is.na(results$p.values))==0) # successful simulations
           if (length(ssim)>0) {
                lastsim   <- results$p.values[max(ssim),] # last successful simulation  
@@ -54,7 +56,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
           results$p.values[((r-1)*S+1):(r*S),]$r <- R.min+r-1
           
           # haplotype matrix
-          fname     <- paste(input,"10Khaplotypes/haplotypes",R.min+r-1,".txt",sep="")
+          fname     <- paste(folder.hap,"/haplotypes",R.min+r-1,".txt",sep="")
           haplotype <- data.matrix(read.table(fname))
           haplotype <- subset(haplotype,rowSums(is.na(haplotype))==0)
           n.hap     <- dim(haplotype)[1]
@@ -197,7 +199,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     
                     # save progress
                     if (sr.mode) {
-                         save(results, file=filename)
+                         save(results, file=file.out)
                     }
                     
                     s = s+1
@@ -210,6 +212,6 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
           
      }
      
-     save(results, file=filename)
+     save(results, file=file.out)
      
 }
