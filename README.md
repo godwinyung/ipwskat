@@ -14,9 +14,10 @@ _Description_: IPW extension of SKAT. See documentation for SKAT.
 
 **sim-cts.R**  
 _Usage_: sim.cts()  
-_Description_: Given a set of parameters, SNP information, haplotypes, and output file name, simulates data under the parameter settings and saves results as an R object with:  
+_Description_: Given a set of parameters, SNP information, haplotypes, and output file name, simulates data under the parameter settings and saves results as an R object with:
  1. table of p-values  
- 2. table of population statistics (e.g., prevalence, number of observed variants)  
+ 2. table of population statistics (e.g., prevalence, number of observed variants)
+
 Note, results are saved intermittently so that jobs can be stopped and restarted at any time.
 
 **sim-cts.sbatch**
