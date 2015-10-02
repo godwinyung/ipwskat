@@ -27,7 +27,7 @@ MAF.threshold  = 0.03
 
 # primary model (D)
 n1        = 1000 # c(100,250,500,1000)
-kappa     = 0.1
+kappa     = 0.01
 link      = "logit"
 beta.Y    = c(0,log(2)/2,log(2))
 c.D       = c(0,log(5)/2,log(2.5)/2)
@@ -47,21 +47,21 @@ S=1
 ### MAIN
 #####
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[1], beta.Y = beta.Y[1], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[1], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",1,1,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[1], beta.Y = beta.Y[1], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[1], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",1,1,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[1], beta.Y = beta.Y[2], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[1], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",1,2,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[1], beta.Y = beta.Y[2], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[1], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",1,2,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[1], beta.Y = beta.Y[3], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[1], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",1,3,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[1], beta.Y = beta.Y[3], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[1], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",1,3,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[2], beta.Y = beta.Y[1], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[2], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",2,1,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[2], beta.Y = beta.Y[1], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[2], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",2,1,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[2], beta.Y = beta.Y[2], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[2], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",2,2,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[2], beta.Y = beta.Y[2], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[2], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",2,2,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[2], beta.Y = beta.Y[3], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[2], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",2,3,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[2], beta.Y = beta.Y[3], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[2], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",2,3,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[3], beta.Y = beta.Y[1], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[3], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",3,1,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[3], beta.Y = beta.Y[1], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[3], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",3,1,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[3], beta.Y = beta.Y[2], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[3], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",3,2,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[3], beta.Y = beta.Y[2], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[3], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",3,2,"_",taskID,sep=""))
 
-sim.cts(c.Y = c.Y[1], c.D = c.D[3], beta.Y = beta.Y[3], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[3], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("results/t1e",3,3,"_",taskID,".RData",sep=""))
+sim.cts(c.Y = c.Y[1], c.D = c.D[3], beta.Y = beta.Y[3], kappa = kappa, link = link, MAF.threshold = MAF.threshold, prop.Y = prop.Y[1], prop.pos.Y = prop.pos.Y, prop.D=prop.D[3], prop.pos.D = prop.pos.D, n1=n1, n.resampling=10000, r.corr=seq(0,1,0.1), R.min=R.min, R.max=R.max, S=S, track=T, sr.mode=T, file.regions=file.regions, file.pos=file.pos, folder.hap=folder.hap, file.out=paste("t1e",3,3,"_",taskID,sep=""))
 

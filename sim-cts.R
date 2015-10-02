@@ -21,8 +21,9 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
      N <- calc.N(kappa,1e-4,n1) 
      
      # initialize matrix of results
-     if (sr.mode & file.exists(file.out)) {
-          results   <- local(get(load(file.out)))
+     file.out.rdata <- paste("results/RData/",file.out,".RData",sep="")
+     if (sr.mode & file.exists(file.out.rdata)) {
+          results   <- local(get(load(file.out.rdata)))
           ssim      <- which(rowSums(is.na(results$p.values))==0) # successful simulations
           if (length(ssim)>0) {
                lastsim   <- results$p.values[max(ssim),] # last successful simulation  
@@ -199,7 +200,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     
                     # save progress
                     if (sr.mode) {
-                         save(results, file=file.out)
+                         save(results, file=file.out.rdata)
                     }
                     
                     s = s+1
@@ -212,6 +213,8 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
           
      }
      
-     save(results, file=file.out)
+     save(results, file=file.out.rdata)
+     write.table(results$p.values, file=paste("results/pvalues/",file.out,".pvalues",sep=""), quote=F, rownames=F)
+     write.table(results$characteristics, file=paste("results/char/",file.out,".char",sep=""), quote=F, rownames=F)
      
 }
