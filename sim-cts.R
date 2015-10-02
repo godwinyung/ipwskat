@@ -41,7 +41,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
           p.values        <- data.frame(matrix(NA,nrow=(R.max-R.min+1)*S,ncol=7+4*(1+length(r.corr))))
           characteristics <- data.frame(matrix(0,nrow=(R.max-R.min+1)*S,ncol=11))
           
-          names(p.values) <- c("r", "s", "full", "naive", "ctrl", "case", "adj", paste("r",paste(c(seq(length(r.corr)),"opt"),".asy1",sep=""),sep=""), paste("r",paste(c(seq(length(r.corr)),"opt"),".adj1",sep=""),sep=""), paste("r",paste(c(seq(length(r.corr)),"opt"),".asy2",sep=""),sep=""), paste("r",paste(c(seq(length(r.corr)),"opt"),".adj2",sep=""),sep=""))
+          names(p.values) <- c("r", "s", "full", "naive", "ctrl", "case", "adj", paste("r",paste(c(seq(length(r.corr)),"opt"),".asy1",sep=""),sep=""), paste("r",paste(c(seq(length(r.corr)),"opt"),".adj1",sep=""),sep=""))
           names(characteristics) <- c("kappa", "n.variants", "n.variants.03", "n.variants.01", "n.variants.001", "n.ovariants.cc", "n.ovariants.case", "n.ovariants.ctrl", "p.cc", "p.case", "p.ctrl")
           
           p.values$r <- rep(seq(R.min,R.max),each=S)
@@ -188,14 +188,10 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     obj <- IPWSKAT_Null_Model(Y1~X1,weights.ipw=weights.ipw,ccstatus=D1,n.resampling=n.resampling)
                     opt.asy1 <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=F))
                     opt.adj1 <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=T))
-                    weights.ipw <- max(weights.ipw)*(1-mu.D)+min(weights.ipw)*mu.D
-                    obj <- IPWSKAT_Null_Model(Y1~X1,weights.ipw=weights.ipw,ccstatus=D1,n.resampling=n.resampling)
-                    opt.asy2 <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=F))
-                    opt.adj2 <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=T))
-                    if (inherits(opt.asy1,"try-error") | inherits(opt.adj1,"try-error") | inherits(opt.asy2,"try-error") | inherits(opt.adj2,"try-error")) {
+                    if (inherits(opt.asy1,"try-error") | inherits(opt.adj1,"try-error")) {
                          s = s - 1
                     } else {
-                         results$p.values[(r-1)*S+s,8:(7+4*(1+length(r.corr)))]  <- c(opt.asy1$param$p.val.each, opt.asy1$p.value, opt.adj1$param$p.val.each, opt.adj1$p.value, opt.asy2$param$p.val.each, opt.asy2$p.value, opt.adj2$param$p.val.each, opt.adj2$p.value)
+                         results$p.values[(r-1)*S+s,8:(7+2*(1+length(r.corr)))]  <- c(opt.asy1$param$p.val.each, opt.asy1$p.value, opt.adj1$param$p.val.each, opt.adj1$p.value)
                     }
                     
                     # save progress
