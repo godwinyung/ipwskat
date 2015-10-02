@@ -14,9 +14,10 @@
 
 * **sim-cts.R**  
  _Usage_: sim.cts()  
- _Description_: Given a set of parameters, SNP information, haplotypes, and output file name, simulates data under the parameter settings and saves results as an R object with:
-  1. table of p-values  
-  2. table of population statistics (e.g., prevalence, number of observed variants)  
+ _Description_: Given a set of parameters, SNP information, haplotypes, and output file name, simulates data under the parameter settings and creates:
+  1. a table of p-values  
+  2. a table of population statistics (e.g., prevalence, number of observed variants)  
+  3. an R object containing (1) and (2)  
 
  Note, results are saved intermittently so that jobs can be stopped and restarted at any time.
 
