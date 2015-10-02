@@ -210,7 +210,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
      }
      
      save(results, file=file.out.rdata)
-     write.table(results$p.values, file=paste("results/pvalues/",file.out,".pvalues",sep=""), quote=F, rownames=F)
-     write.table(results$characteristics, file=paste("results/char/",file.out,".char",sep=""), quote=F, rownames=F)
+     write.table(results$p.values, file=paste("results/pvalues/",file.out,".pvalues",sep=""), quote=F, row.names=F)
+     write.table(results$characteristics, file=paste("results/char/",file.out,".char",sep=""), quote=F, row.names=F)
      
 }
