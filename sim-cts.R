@@ -38,7 +38,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                s = 1
           }
      } else {
-          p.values        <- data.frame(matrix(NA,nrow=(R.max-R.min+1)*S,ncol=7+4*(1+length(r.corr))))
+          p.values        <- data.frame(matrix(NA,nrow=(R.max-R.min+1)*S,ncol=7+2*(1+length(r.corr))))
           characteristics <- data.frame(matrix(0,nrow=(R.max-R.min+1)*S,ncol=11))
           
           names(p.values) <- c("r", "s", "full", "naive", "ctrl", "case", "adj", paste("r",paste(c(seq(length(r.corr)),"opt"),".asy1",sep=""),sep=""), paste("r",paste(c(seq(length(r.corr)),"opt"),".adj1",sep=""),sep=""))
@@ -80,11 +80,8 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
           vG   <- haplotype[hap1,] + haplotype[hap2,]
           G    <- vG[,rvariants]
           
-          # Randomly select a set of rare variants to be causal
-          cvariants      <- sample(n.rvariants, n.rvariants*prop.D)        # index wrt rvariants
-          
-          # Randomly select a subset of the causal variants to have positive association with D
-          if (c.D != 0) {
+          cvariants      <- sample(n.rvariants, n.rvariants*prop.D)        # randomly select a set of rare variants to be causally associated with D
+          if (c.D != 0) { # randomly select a subset of the causal variants to have positive association with D
                positive       <- sample(cvariants, length(cvariants)*prop.pos.D)          # index wrt rvariants
                pcvariants     <- seq(1:n.rvariants) %in% positive                         # causal variant w/ positive association (T/F)
                ncvariants     <- seq(1:n.rvariants) %in% setdiff(cvariants, positive)     # causal variant w/ negative association (T/F)
@@ -93,8 +90,8 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                beta.G         <- matrix(0, nrow=n.rvariants, ncol=1)
           }
           
-          # Randomly select a subset of the causal variants to have positive association with Y
-          if (c.Y != 0) {
+          cvariants      <- sample(n.rvariants, n.rvariants*prop.Y)        # randomly select a set of rare variants to be causally associated with Y
+          if (c.Y != 0) { # randomly select a subset of the causal variants to have positive association with Y
                positive       <- sample(cvariants, length(cvariants)*prop.pos.Y)          # index wrt rvariants
                pcvariants     <- seq(1:n.rvariants) %in% positive                         # causal variant w/ positive association (T/F)
                ncvariants     <- seq(1:n.rvariants) %in% setdiff(cvariants, positive)     # causal variant w/ negative association (T/F)
