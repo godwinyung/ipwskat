@@ -9,8 +9,8 @@
  _Description_: Generates 10,000 haplotypes for each of 10,000 regions.
 
 * **gensum.py**  
-  _Usage: python gensum.py suffix outfile  
-  _Description: Searches for all .char and .pvalues files inside the folders results/char and results/pvalues and that starts with suffix. Concatenates files of the same type and saves results as single .char and .pvalue files.
+  _Usage_: python gensum.py suffix outfile  
+  _Description_: Searches for all .char and .pvalues files inside the folders results/char and results/pvalues and that starts with suffix. Concatenates files of the same type and saves results as single .char and .pvalue files.
 
 * **ipwskat.R**  
  _Usage_: IPWSKAT_Null_Model(), IPWSKAT()  
