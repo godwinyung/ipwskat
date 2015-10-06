@@ -8,8 +8,8 @@
  _Usage_: sbatch --array=1-1000 genhap.sbatch  
  _Description_: Generates 10,000 haplotypes for each of 10,000 regions.
 
-* **gensum.py**
-  _Usage: python gensum.py suffix outfile
+* **gensum.py**  
+  _Usage: python gensum.py suffix outfile  
   _Description: Searches for all .char and .pvalues files inside the folders results/char and results/pvalues and that starts with suffix. Concatenates files of the same type and saves results as single .char and .pvalue files.
 
 * **ipwskat.R**  
@@ -21,7 +21,7 @@
  _Description_: Given a set of parameters, SNP information, haplotypes, and output file name, simulates data under the parameter settings and creates:
   1. a table of p-values  
   2. a table of population statistics (e.g., prevalence, number of observed variants)  
-  3. an R object containing (1) and (2)  
+  3. an R object containing (i) and (ii)  
 
  Note, results are saved intermittently so that jobs can be stopped and restarted at any time.
 
