@@ -6,4 +6,4 @@
 #SBATCH -p serial_requeue
 #SBATCH --mem=200
 
-python ../code/genhap.py out.hap-1 regions.txt haplotypes $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_ID
+python ../code/genhap.py out.hap-1 regions3e3.txt haplotypes3e3 $SLURM_ARRAY_TASK_ID $SLURM_ARRAY_TASK_ID
