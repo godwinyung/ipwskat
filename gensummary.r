@@ -2,35 +2,11 @@
 # FUNCTIONS 
 ###
 
-combine <- function(kmin,kmax,suffix) {
-  # initialize
-  out <- local(get(load(paste(suffix,kmin,".RData",sep=""))))
-  
-  # concatenate results
-  for (k in (kmin+1):kmax) {
-    fname <- paste(suffix,k,".RData",sep="")
-    if (file.exists(fname)) {
-      temp <- local(get(load(fname)))
-      out$p.values <- rbind(out$p.values,temp$p.values)
-      out$characteristics <- rbind(out$characteristics, temp$characteristics)
-    }
-  }
-  
-  # remove missing results
-  has.na <- which(rowSums(is.na(out$p.values))>0)
-  if (length(has.na)>0) {
-    out$p.values <- out$p.values[-has.na,]
-    out$characteristics <- out$characteristics[-has.na,]
-  }
-  
-  return(out)
-}
-
-calc.t1e <- function(t1e, alpha=0.05) {
+calc.power <- function(pval, alpha=0.05) {
   out <- c()
-  for (i in 1:length(t1e)) {
-    for (j in 1:length(t1e[[i]])) {
-      out <- cbind(out, colMeans(t1e[[i]][[j]]$p.values<alpha))
+  for (i in 1:length(pval)) {
+    for (j in 1:length(pval[[i]])) {
+      out <- cbind(out, colMeans(pval[[i]][[j]]<alpha))
     }
   }
   out <- data.frame(out)
@@ -41,31 +17,20 @@ calc.t1e <- function(t1e, alpha=0.05) {
 # MAIN
 ###
 
-# combine scenario-specific results and save
-t1e <- list()
+# combine scenario-specific results
+pval <- list()
 for (i in 1:3) {
-  t1e[[i]] <- list()
+  pval[[i]] <- list()
   for (j in 1:3) {
-    print(paste(i,j),quote=F)
-    print("Combining ...", quote=F)
-    temp <- combine(1,10000,paste("t1e",i,j,"_",sep=""))
-    print("Saving ...", quote=F)
-    save(temp,file=paste("t1e",i,j,"_all.RData",sep=""))
-    t1e[[i]][[j]] <- temp
+    pval[[i]][[j]] <- read.table(paste("power",i,j,".pvalues",sep=""), header=T)[,3:74]
   }
 }
 
-# load scenario-specific results
-t1e <- list()
-for (i in 1:3) {
-  t1e[[i]] <- list()
-  for (j in 1:3) {
-    t1e[[i]][[j]] <- local(get(load(paste("t1e",i,j,"_all.RData",sep=""))))
-  }
-}
+power1 <- calc.power(pval,0.05)
+power2 <- calc.power(pval,0.01)
 
-t1e1 <- calc.t1e(t1e,0.05)
-t1e2 <- calc.t1e(t1e,0.01)
+round(power1[c("r1.ctrl","r1.case","r1.naive","r1.joint","r1.ipw","r1.aipw"),],3)
+round(power1[c("r11.ctrl","r11.case","r11.naive","r11.joint","r11.ipw","r11.aipw"),],3)
+round(power1[c("ropt.ctrl","ropt.case","ropt.naive","ropt.joint","ropt.ipw","ropt.aipw"),],3)
 
-round(t1e1[c("full","naive","ctrl","case","adj","ropt.asy1","ropt.adj1","ropt.asy2","ropt.adj2"),],3)
-round(t1e2[c("full","naive","ctrl","case","adj","ropt.asy1","ropt.adj1","ropt.asy2","ropt.adj2"),],3)
+
