@@ -1,5 +1,6 @@
 sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", MAF.threshold = 0.03, prop.Y = 0.05, prop.pos.Y = 0.50, prop.D=0.05, prop.pos.D = 0.50, n1=1000, n.resampling=1000, r.corr=seq(0,1,0.1), R.min=1, R.max=100, S=10, track=F, sr.mode=F, file.regions=NA, file.pos=NA, folder.hap=NA, file.out=NA) {
      
+     n.corr    <- length(r.corr)
      regions   <- read.table(file.regions)
      SNPInfo   <- read.table(file.pos,header=T)
      
@@ -38,10 +39,10 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                s = 1
           }
      } else {
-          p.values        <- data.frame(matrix(NA,nrow=(R.max-R.min+1)*S,ncol=7+2*(1+length(r.corr))))
+          p.values        <- data.frame(matrix(NA,nrow=(R.max-R.min+1)*S,ncol=2+6*(1+n.corr)))
           characteristics <- data.frame(matrix(0,nrow=(R.max-R.min+1)*S,ncol=11))
           
-          names(p.values) <- c("r", "s", "full", "naive", "ctrl", "case", "adj", paste("r",paste(c(seq(length(r.corr)),"opt"),".asy1",sep=""),sep=""), paste("r",paste(c(seq(length(r.corr)),"opt"),".adj1",sep=""),sep=""))
+          names(p.values) <- c("r", "s", paste("r",paste(c(seq(n.corr),"opt"),".ctrl",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".case",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".naive",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".joint",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".ipw",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".aipw",sep=""),sep=""))
           names(characteristics) <- c("kappa", "n.variants", "n.variants.03", "n.variants.01", "n.variants.001", "n.ovariants.cc", "n.ovariants.case", "n.ovariants.ctrl", "p.cc", "p.case", "p.ctrl")
           
           p.values$r <- rep(seq(R.min,R.max),each=S)
@@ -85,7 +86,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                positive       <- sample(cvariants, length(cvariants)*prop.pos.D)          # index wrt rvariants
                pcvariants     <- seq(1:n.rvariants) %in% positive                         # causal variant w/ positive association (T/F)
                ncvariants     <- seq(1:n.rvariants) %in% setdiff(cvariants, positive)     # causal variant w/ negative association (T/F)
-               beta.G         <- matrix((-1*pcvariants + ncvariants) * c.D * log10(info$FREQ1), ncol=1)
+               beta.G         <- matrix((-1*pcvariants + ncvariants) * c.D * log10(info$FREQ1) / 2, ncol=1)
           } else {
                beta.G         <- matrix(0, nrow=n.rvariants, ncol=1)
           }
@@ -95,7 +96,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                positive       <- sample(cvariants, length(cvariants)*prop.pos.Y)          # index wrt rvariants
                pcvariants     <- seq(1:n.rvariants) %in% positive                         # causal variant w/ positive association (T/F)
                ncvariants     <- seq(1:n.rvariants) %in% setdiff(cvariants, positive)     # causal variant w/ negative association (T/F)
-               alpha.G        <- matrix((-1*pcvariants + ncvariants) * c.Y * log10(info$FREQ1), ncol=1)
+               alpha.G        <- matrix((-1*pcvariants + ncvariants) * c.Y * log10(info$FREQ1) / 2, ncol=1)
           } else {
                alpha.G        <- matrix(0, nrow=n.rvariants, ncol=1)
           }
@@ -136,59 +137,55 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     
                     MAF  <- info$FREQ1
                     
-                    # analysis 1 : full cohort SKAT
-                    Y1 <- Y
-                    ovariants <- which(colSums(G) > 0)
-                    G1 <- G[,ovariants]
-                    MAF1 <- MAF[ovariants]
-                    obj  <- SKAT_Null_Model(Y~X)
-                    results$p.values[(r-1)*S+s,]$full <- SKAT(G1, obj, weights=dbeta(MAF1,1,25))$p.value
-                    
-                    # analysis 3 : control-only SKAT
+                    # control-only SKAT-O
                     Y1   <- Y[controls] 
                     X1   <- X[controls, ]
                     ovariants <- which( colSums( G[controls, ] ) > 0 )
                     G1   <- G[controls, ovariants]
                     MAF1 <- MAF[ovariants]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    results$p.values[(r-1)*S+s,]$ctrl <- SKAT(G1, obj, weights=dbeta(MAF1,1,25))$p.value
+                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
+                    results$p.values[(r-1)*S+s,3:(3+n.corr)] <- c(out$param$p.val.each, out$p.value)
                     
-                    # analysis 4 : case-only SKAT
+                    # case-only SKAT-O
                     Y1   <- Y[cases] 
                     X1   <- X[cases, ]
                     ovariants <- which( colSums( G[cases, ] ) > 0 )
                     G1   <- G[cases, ovariants]
                     MAF1 <- MAF[ovariants]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    results$p.values[(r-1)*S+s,]$case <- SKAT(G1, obj, weights=dbeta(MAF1,1,25))$p.value
+                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
+                    results$p.values[(r-1)*S+s,(4+n.corr):(4+2*n.corr)] <- c(out$param$p.val.each, out$p.value)
                     
-                    # analysis 2 : naive SKAT
+                    # naive SKAT-O
                     Y1   <- Y[c(cases,controls)] 
                     X1   <- X[c(cases,controls), ]
                     ovariants <- which( colSums( G[c(cases,controls), ] ) > 0 )
                     G1   <- G[c(cases,controls), ovariants]
                     MAF1 <- MAF[ovariants]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    results$p.values[(r-1)*S+s,]$naive <- SKAT(G1, obj, weights=dbeta(MAF1,1,25))$p.value
+                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
+                    results$p.values[(r-1)*S+s,(5+2*n.corr):(5+3*n.corr)] <- c(out$param$p.val.each, out$p.value)
                     
-                    # analysis 5 : adjusted SKAT
+                    # joint SKAT-O
                     X1   <- cbind(X,D)[c(cases,controls), ]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    results$p.values[(r-1)*S+s,]$adj <- SKAT(G1, obj, weights=dbeta(MAF1,1,25))$p.value
+                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
+                    results$p.values[(r-1)*S+s,(6+3*n.corr):(6+4*n.corr)] <- c(out$param$p.val.each, out$p.value)
                     
-                    # analysis 6 : ipw SKAT
+                    # IPW SKAT-O
                     X1   <- X[c(cases,controls), ]
                     D1   <- D[c(cases,controls)]
                     mu.D <- glm(D1~X1+Y1,family="binomial")$fitted.values
                     weights.snp <- dbeta(MAF1,1,25)
                     weights.ipw <- D1*2*mean(D) + (1-D1)*2*mean(1-D)
                     obj <- IPWSKAT_Null_Model(Y1~X1,weights.ipw=weights.ipw,ccstatus=D1,n.resampling=n.resampling)
-                    opt.asy1 <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=F))
-                    opt.adj1 <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=T))
-                    if (inherits(opt.asy1,"try-error") | inherits(opt.adj1,"try-error")) {
+                    opt.asy <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=F))
+                    opt.adj <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=T))
+                    if (inherits(opt.asy,"try-error") | inherits(opt.adj,"try-error")) {
                          s = s - 1
                     } else {
-                         results$p.values[(r-1)*S+s,8:(7+2*(1+length(r.corr)))]  <- c(opt.asy1$param$p.val.each, opt.asy1$p.value, opt.adj1$param$p.val.each, opt.adj1$p.value)
+                         results$p.values[(r-1)*S+s,(7+4*n.corr):(8+6*n.corr)]  <- c(opt.asy$param$p.val.each, opt.asy$p.value, opt.adj$param$p.val.each, opt.adj$p.value)
                     }
                     
                     # save progress
