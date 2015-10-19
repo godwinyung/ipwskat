@@ -176,12 +176,10 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     # IPW SKAT-O
                     X1   <- X[c(cases,controls), ]
                     D1   <- D[c(cases,controls)]
-                    mu.D <- glm(D1~X1+Y1,family="binomial")$fitted.values
-                    weights.snp <- dbeta(MAF1,1,25)
                     weights.ipw <- D1*2*mean(D) + (1-D1)*2*mean(1-D)
                     obj <- IPWSKAT_Null_Model(Y1~X1,weights.ipw=weights.ipw,ccstatus=D1,n.resampling=n.resampling)
-                    opt.asy <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=F))
-                    opt.adj <- try(IPWSKAT(G1, obj, weights.snp.beta=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=T))
+                    opt.asy <- try(IPWSKAT(G1, obj, weights.snp=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=F))
+                    opt.adj <- try(IPWSKAT(G1, obj, weights.snp=dbeta(MAF1,1,25), r.corr=r.corr, adjustment=T))
                     if (inherits(opt.asy,"try-error") | inherits(opt.adj,"try-error")) {
                          s = s - 1
                     } else {
