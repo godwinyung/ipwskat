@@ -144,8 +144,10 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     G1   <- G[controls, ovariants]
                     MAF1 <- MAF[ovariants]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
-                    results$p.values[(r-1)*S+s,3:(3+n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    out  <- try(SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr))
+                    if ( class(out) != "try-error" ) {
+                      results$p.values[(r-1)*S+s,3:(3+n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    }
                     
                     # case-only SKAT-O
                     Y1   <- Y[cases] 
@@ -154,8 +156,10 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     G1   <- G[cases, ovariants]
                     MAF1 <- MAF[ovariants]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
-                    results$p.values[(r-1)*S+s,(4+n.corr):(4+2*n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    out  <- try(SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr))
+                    if ( class(out) != "try-error" ) {
+                      results$p.values[(r-1)*S+s,(4+n.corr):(4+2*n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    }
                     
                     # naive SKAT-O
                     Y1   <- Y[c(cases,controls)] 
@@ -164,14 +168,18 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     G1   <- G[c(cases,controls), ovariants]
                     MAF1 <- MAF[ovariants]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
-                    results$p.values[(r-1)*S+s,(5+2*n.corr):(5+3*n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    out  <- try(SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr))
+                    if ( class(out) != "try-error" ) {
+                      results$p.values[(r-1)*S+s,(5+2*n.corr):(5+3*n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    }
                     
                     # joint SKAT-O
                     X1   <- cbind(X,D)[c(cases,controls), ]
                     obj  <- SKAT_Null_Model(Y1~X1)
-                    out  <- SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr)
-                    results$p.values[(r-1)*S+s,(6+3*n.corr):(6+4*n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    out  <- try(SKAT(G1, obj, weights=dbeta(MAF1,1,25), r.corr=r.corr))
+                    if ( class(out) != "try-error" ) {
+                      results$p.values[(r-1)*S+s,(6+3*n.corr):(6+4*n.corr)] <- c(out$param$p.val.each, out$p.value)
+                    }
                     
                     # IPW SKAT-O
                     X1   <- X[c(cases,controls), ]
