@@ -109,7 +109,7 @@ resample_bernoulli <- function(Y,mu) {
      id_c2<-union(setdiff(id_case1,id_case2),setdiff(id_case2,id_case1))
      if(n.case <= length(id_c1)){
           id_case<-sample(id_c1,n.case)
-     }else if (n.case > length(id_c1) && n.case <= length(id_c1)+length(id_c2)){
+     } else if (n.case > length(id_c1) && n.case <= length(id_c1)+length(id_c2)){
           id_c3<-sample(id_c2,n.case - length(id_c1))
           id_case<-c(id_c1,id_c3)
      }else {					
@@ -153,7 +153,8 @@ IPWSKAT <- function(Z, obj, weights.snp=NULL, weights.snp.beta=c(1,25), r.corr=0
           V.inv <- c(obj$mu*(1-obj$mu))
      }
      D    <- c(obj$weights.ipw*abs(obj$res))
-     DPZ  <- D*Z - D*X %*% solve(t(X)%*%(obj$weights.ipw*V.inv*X)) %*% t(obj$weights.ipw*V.inv*X) %*% Z
+     DPZ  <- D*V.inv*Z - D*V.inv*X %*% solve(t(X)%*%(V.inv^2*D^2*X)) %*% t(D*V.inv*X) %*% (D*V.inv*Z)
+#      DPZ  <- D*Z - D*X %*% solve(t(X)%*%(obj$weights.ipw*V.inv*X)) %*% t(obj$weights.ipw*V.inv*X) %*% Z
      
      out.Q<- IPWSKAT_Get_Q(obj$weights.ipw*Z, obj$res, r.corr, obj$res.moments, obj$out_type)
      Q.r  <- out.Q$Q.r
