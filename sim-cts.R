@@ -43,7 +43,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
           characteristics <- data.frame(matrix(0,nrow=(R.max-R.min+1)*S,ncol=13))
           
           names(p.values) <- c("r", "s", paste("r",paste(c(seq(n.corr),"opt"),".ctrl",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".case",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".naive",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".joint",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".ipw",sep=""),sep=""), paste("r",paste(c(seq(n.corr),"opt"),".aipw",sep=""),sep=""))
-          names(characteristics) <- c("kappa", "n.variants", "n.variants.03", "n.variants.01", "n.variants.001",  "n.ovariants", "n.ovariants.03", "n.ovariants.01", "n.variants.001", "n.cvariants", "n.cvariants.03", "n.cvariants.01", "n.cvariants.001")
+          names(characteristics) <- c("kappa", "n.variants", "n.variants.03", "n.variants.01", "n.variants.001",  "n.ovariants", "n.ovariants.03", "n.ovariants.01", "n.ovariants.001", "n.cvariants", "n.cvariants.03", "n.cvariants.01", "n.cvariants.001")
           
           p.values$r <- rep(seq(R.min,R.max),each=S)
           p.values$s <- rep(seq(1,S),R.max-R.min+1)
@@ -67,7 +67,7 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
           # statistics of variants in subregion
           info  <- SNPInfo[regions[R.min+r-1,1]:regions[R.min+r-1,2],]
           FREQ  <- info$FREQ1 # allele frequencies
-          cFREQ <- unlist(lapply(FREQ,fun(x) min(x,1-x))) # minor allele frequencies
+          cFREQ <- unlist(lapply(FREQ,function(x) min(x,1-x))) # minor allele frequencies
           results$characteristics[((r-1)*S+1):(r*S),]$n.variants       <- n.variants
           results$characteristics[((r-1)*S+1):(r*S),]$n.variants.03    <- sum(cFREQ < .03)
           results$characteristics[((r-1)*S+1):(r*S),]$n.variants.01    <- sum(cFREQ < .01)
@@ -92,8 +92,8 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                positive       <- sample(cvariants, length(cvariants)*prop.pos.D)
                pcvariants     <- cvariants[cvariants %in% positive]  # causal variant w/ positive association (T/F)
                ncvariants     <- cvariants[!cvariants %in% positive] # causal variant w/ negative association (T/F)
-               beta.G[pcvariants,] <- -1*c.D*log10(cFREQ1[pcvariants])/2
-               beta.G[ncvariants,] <- c.D*log10(cFREQ1[pcvariants])/2
+               beta.G[pcvariants,] <- -1*c.D*log10(cFREQ[pcvariants])/2
+               beta.G[ncvariants,] <- c.D*log10(cFREQ[ncvariants])/2
           }
           
           # randomly select a set of rare variants to be causally associated with Y
@@ -103,8 +103,8 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                positive       <- sample(cvariants, length(cvariants)*prop.pos.Y)          
                pcvariants     <- cvariants[cvariants %in% positive]  # causal variant w/ positive association (T/F)
                ncvariants     <- cvariants[!cvariants %in% positive] # causal variant w/ negative association (T/F)
-               alpha.G[pcvariants,] <- -1*c.Y*log10(cFREQ1[pcvariants])/2
-               alpha.G[ncvariants,] <- c.Y*log10(cFREQ1[pcvariants])/2
+               alpha.G[pcvariants,] <- -1*c.Y*log10(cFREQ[pcvariants])/2
+               alpha.G[ncvariants,] <- c.Y*log10(cFREQ[ncvariants])/2
           }
           
           while (s <= S) {
@@ -136,14 +136,14 @@ sim.cts <- function(c.Y = 0, c.D = 0, beta.Y = 0, kappa = 0.1, link = "logit", M
                     results$characteristics[(r-1)*S+s,]$kappa            <- mean(D)                                           # disease prevalence
                     temp <- colSums(G[c(cases,controls),])>0
                     results$characteristics[(r-1)*S+s,]$n.ovariants      <- sum(temp)
-                    results$characteristics[(r-1)*S+s,]$n.ovariants.03   <- sum(temp & cFREQ < 0.03)
-                    results$characteristics[(r-1)*S+s,]$n.ovariants.01   <- sum(temp & cFREQ < 0.01)
-                    results$characteristics[(r-1)*S+s,]$n.ovariants.001  <- sum(temp & cFREQ < 0.001)
-                    temp <- colSums(G[c(cases,controls),cvariants]>0)
+                    results$characteristics[(r-1)*S+s,]$n.ovariants.03   <- sum(temp & (cFREQ < 0.03))
+                    results$characteristics[(r-1)*S+s,]$n.ovariants.01   <- sum(temp & (cFREQ < 0.01))
+                    results$characteristics[(r-1)*S+s,]$n.ovariants.001  <- sum(temp & (cFREQ < 0.001))
+                    temp <- colSums(G[c(cases,controls),cvariants])>0
                     results$characteristics[(r-1)*S+s,]$n.cvariants      <- sum(temp)
-                    results$characteristics[(r-1)*S+s,]$n.cvariants.03   <- sum(temp & cFREQ[cvariants] < 0.03)
-                    results$characteristics[(r-1)*S+s,]$n.cvariants.01   <- sum(temp & cFREQ[cvariants] < 0.01)
-                    results$characteristics[(r-1)*S+s,]$n.cvariants.001  <- sum(temp & cFREQ[cvariants] < 0.001)
+                    results$characteristics[(r-1)*S+s,]$n.cvariants.03   <- sum(temp & (cFREQ[cvariants] < 0.03))
+                    results$characteristics[(r-1)*S+s,]$n.cvariants.01   <- sum(temp & (cFREQ[cvariants] < 0.01))
+                    results$characteristics[(r-1)*S+s,]$n.cvariants.001  <- sum(temp & (cFREQ[cvariants] < 0.001))
                     
                     # control-only SKAT-O
                     Y1   <- Y[controls] 
